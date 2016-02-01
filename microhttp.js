@@ -1,7 +1,7 @@
 (function(window){
 	'use strict';
 
-	$httpProvider = {
+	var $httpProvider = {
 		defaults : {
 			method			: 'get',
 			url 			: '',
@@ -9,12 +9,12 @@
 			data 			: null,
 			headers 		: { 'Accept' : 'application/json, text/plain, * / *'},
 			cache 			: null,
-			timeout 		: null,
+			timeout 		: 10000, //10sec
 			responseType 	: 'json'
 		}
 	};
-	$http = function(options){
-		var ops = _.extend({},$httpProvider.defaults);
+	var $http = function(options){
+		var ops = _.extend({},$httpProvider.defaults,options);
 
 		switch(ops.headers.method){
 			case 'post':
@@ -47,17 +47,27 @@
 						if(ops.responseType == 'json')
 								resolve(JSON.parse(this.responseText));
 						resolve(this.responseText);
-					} else{
+					}else{
 						reject(this);
 					}
 				}
-			}
+			};
 			if(ops.headers['Content-Type'] == 'application/json' && typeof(ops.data) == 'string'){
 				//parse json
 				ops.data = JSON.stringify( ops.data );
 			}
 
 			ajax.send(ops.data);
+			
+			setTimeout(function(){
+				if(this.readyState != 4){
+					ajax.abort();
+					reject(ajax);
+				}
+			},ops.timeout);
 		});
 	};
+
+	window.$http 			= window.$http || $http;
+	window.$httpProvider 	= window.$httpProvider || $httpProvider;
 })(window);
