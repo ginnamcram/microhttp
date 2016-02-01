@@ -1,0 +1,11 @@
+{
+  "name": "microhttp",
+  "private": true,
+  "version": "1.0",
+  "dependencies": {
+    
+  },
+  "devDependencies": {
+    "web-component-tester": "Polymer/web-component-tester#^1.0.0"
+  }
+}
