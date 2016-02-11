@@ -1,5 +1,18 @@
 (function(window){
 	'use strict';
+	//simple property copy funtion
+	function extend(){
+		var result = arguments[0];
+		for (var i = 1; i < arguments.length; i++) {
+			if(typeof(arguments[i]) != 'object'){
+				throw 'argument mist be a property opject';
+			}
+			for(var prop in arguments[i]){
+				result[prop] = arguments[i][prop];
+			}
+		};
+		return result;
+	}
 
 	var $httpProvider = {
 		defaults : {
@@ -14,7 +27,7 @@
 		}
 	};
 	var $http = function(options){
-		var ops = _.extend({},$httpProvider.defaults,options);
+		var ops = extend({},$httpProvider.defaults,options);
 
 		switch(ops.headers.method){
 			case 'post':
@@ -58,7 +71,8 @@
 			}
 
 			ajax.send(ops.data);
-			
+
+			//timeout function
 			setTimeout(function(){
 				if(this.readyState != 4){
 					ajax.abort();
